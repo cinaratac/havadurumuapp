@@ -31,11 +31,13 @@ class homepage extends StatefulWidget {
 class _homepageState extends State<homepage> {
   final List<String> sehirler = [
     "Ankara",
-    "Bursa",
+    "Erzurum",
     "Kastamonu",
     "İstanbul",
     "Van",
     "Gaziantep",
+    "Landon",
+    "Paris",
   ];
 
   String? secilenSehir;
@@ -72,6 +74,11 @@ class _homepageState extends State<homepage> {
 
   _buildemptycard() {
     return Card(
+      shape: RoundedRectangleBorder(
+        side: BorderSide(width: 2),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      color: const Color(0xFFF6D365),
       margin: const EdgeInsets.all(16),
       child: SizedBox(
         height: 182,
@@ -88,17 +95,30 @@ class _homepageState extends State<homepage> {
 
   _buildloadingcard() {
     return Card(
+      shape: RoundedRectangleBorder(
+        side: BorderSide(width: 2),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      color: const Color(0xFFF6D365),
       margin: const EdgeInsets.all(16),
       child: SizedBox(
-        height: 182,
+        height: 184,
         width: 440,
-        child: Column(children: [Center(child: CircularProgressIndicator())]),
+        child: Center(child: CircularProgressIndicator()),
       ),
     );
   }
 
   _buildCardweather(WeatherModel weatherModel) {
+    int redValue = -4 * (weatherModel.main!.temp!.toInt());
     return Card(
+      shape: RoundedRectangleBorder(
+        side: BorderSide(width: 2),
+        borderRadius: BorderRadius.circular(12),
+      ),
+
+      // sabit yeşil ve mavi, kırmızı arttıkça kart kızarır
+      color: Color.fromARGB(255, 224, 240 + redValue, 44),
       margin: EdgeInsets.all(16),
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -144,14 +164,28 @@ class _homepageState extends State<homepage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Center(child: Text("Hava durumu"))),
+      appBar: AppBar(
+        title: Center(
+          child: Text(
+            "Hava Durumu",
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              letterSpacing: 5,
+              fontSize: 22,
+            ),
+          ),
+        ),
+        backgroundColor: Color.fromARGB(255, 152, 192, 255),
+      ),
+      backgroundColor: Color.fromARGB(255, 53, 91, 107),
+
       body: Column(
         children: [
           FutureBuilder(
             future: weatherfuture,
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                _buildloadingcard();
+                return _buildloadingcard();
               }
               if (snapshot.hasError) {
                 return Center(child: Text(snapshot.error.toString()));
@@ -176,8 +210,24 @@ class _homepageState extends State<homepage> {
                 return GestureDetector(
                   onTap: () => selectedcity(sehirler[index]),
                   child: Card(
-                    color: isselected ? Colors.blue.shade200 : null,
-                    child: Center(child: Text(sehirler[index])),
+                    elevation: 6,
+                    shadowColor: const Color.fromARGB(255, 0, 0, 0),
+                    color: isselected
+                        ? Color.fromARGB(255, 248, 221, 89)
+                        : Color.fromARGB(255, 154, 106, 17),
+                    shape: RoundedRectangleBorder(
+                      side: BorderSide(width: 2),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Center(
+                      child: Text(
+                        sehirler[index],
+                        style: TextStyle(
+                          fontSize: 20,
+                          color: isselected ? Colors.black : Colors.white70,
+                        ),
+                      ),
+                    ),
                   ),
                 );
               },
